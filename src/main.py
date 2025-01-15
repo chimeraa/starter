@@ -24,17 +24,17 @@ def main(context):
         try:
             body = json.loads(context.req.body) if context.req.body else {}
         except json.JSONDecodeError:
-            return context.res.json({"error": "Il corpo della richiesta non è un JSON valido."}, status=400)
+            return context.log.json({"error": "Il corpo della richiesta non è un JSON valido."}, status=400)
 
         if context.req.path == "/":
             # Recupera i documenti dalla collection
             collection_id = body.get("collection_id")
 
             if not collection_id:
-                return context.res.json({"error": "collection_id è obbligatorio."}, status=400)
+                return context.log.json({"error": "collection_id è obbligatorio."}, status=400)
 
             documents = databases.list_documents(database_id=database_id, collection_id=collection_id)
-            return context.res.json({"documents": documents})
+            return context.log.json({"documents": documents})
 
         elif context.req.path.startswith("/update/"):
             # Estrae l'ID della collection dall'URL
@@ -46,7 +46,7 @@ def main(context):
             new_value = body.get("new_value")
 
             if not document_id or not field_name or new_value is None:
-                return context.res.json(
+                return context.log.json(
                     {"error": "document_id, field_name e new_value sono obbligatori."},
                     status=400,
                 )
@@ -59,10 +59,10 @@ def main(context):
                 document_id=document_id,
                 data=updated_data
             )
-            return context.res.json({"message": "Documento aggiornato con successo!", "response": response})
+            return context.log.json({"message": "Documento aggiornato con successo!", "response": response})
 
         else:
-            return context.res.json({"message": "Endpoint non valido."}, status=404)
+            return context.log.json({"message": "Endpoint non valido."}, status=404)
 
     except AppwriteException as err:
-        return context.res.json({"error": repr(err)}, status=500)
+        return context.log.json({"error": repr(err)}, status=500)
