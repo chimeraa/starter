@@ -1,4 +1,6 @@
+
 from appwrite.client import Client
+from appwrite.services.databases import Databases
 from appwrite.services.users import Users
 from appwrite.exception import AppwriteException
 import os
@@ -14,14 +16,15 @@ def main(context):
         .set_key(context.req.headers["x-appwrite-key"])
     )
     users = Users(client)
-
+    databases = Databases(client)
     try:
-        response = users.list()
+        response = databases.list()
         # Log messages and errors to the Appwrite Console
         # These logs won't be seen by your end users
-        context.log("Total users: " + str(response["total"]))
+        for r in response:
+            print(f"Database {r}:")
     except AppwriteException as err:
-        context.error("Could not list users: " + repr(err))
+        context.error("Could not list databases: " + repr(err))
 
     # The req object contains the request data
     if context.req.path == "/ping":
