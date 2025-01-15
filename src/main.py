@@ -21,8 +21,7 @@ def main(context):
         response = databases.list()
         # Log messages and errors to the Appwrite Console
         # These logs won't be seen by your end users
-        for r in response:
-            context.log(f"Database {r}:")
+        context.log(response)
     except AppwriteException as err:
         context.error("Could not list databases: " + repr(err))
 
