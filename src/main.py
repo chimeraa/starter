@@ -22,7 +22,7 @@ def main(context):
         # Log messages and errors to the Appwrite Console
         # These logs won't be seen by your end users
         for r in response:
-            print(f"Database {r}:")
+            context.log(f"Database {r}:")
     except AppwriteException as err:
         context.error("Could not list databases: " + repr(err))
 
