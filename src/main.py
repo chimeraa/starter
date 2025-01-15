@@ -18,6 +18,7 @@ def main(context):
     users = Users(client)
     databases = Databases(client)
     try:
+
         response = databases.get(database_id="6729f7e30033d3541307")
         # Log messages and errors to the Appwrite Console
         # These logs won't be seen by your end users
