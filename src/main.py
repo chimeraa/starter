@@ -73,6 +73,29 @@ def main(context):
                 context.log({"error": f"Errore nell'aggiornamento del documento: {repr(err)}"})
                 return context.res.json({"error": "Errore nell'aggiornamento del documento."}, status=500)
 
+        # Se la richiesta è per l'endpoint "/create"
+        elif context.req.path == "/create":
+            collection_id = body.get("collection_id")
+            document_data = body.get("document_data")
+
+            if not collection_id or not document_data:
+                context.log({"error": "collection_id e document_data sono obbligatori."})
+                return context.res.json({"error": "collection_id e document_data sono obbligatori."}, status=400)
+
+            try:
+                # Crea un nuovo documento
+                response = databases.create_document(
+                    database_id=database_id,
+                    collection_id=collection_id,
+                    document_id="unique()",  # Genera un ID univoco per il documento
+                    data=document_data
+                )
+                context.log({"action": "create_document", "collection_id": collection_id, "document_data": document_data})
+                return context.res.json({"message": "Documento creato con successo!", "response": response})
+            except AppwriteException as err:
+                context.log({"error": f"Errore nella creazione del documento: {repr(err)}"})
+                return context.res.json({"error": "Errore nella creazione del documento."}, status=500)
+
         # Endpoint non valido
         else:
             context.log({"error": "Endpoint non valido."})
